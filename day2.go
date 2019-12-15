@@ -7,8 +7,9 @@ import (
     "io/ioutil"
 )
 
-func p1(input string) []int {
+func parse_intcodes(input string) []int {
     var intcodes = []int{}
+
     for _, code := range strings.Split(input, ",") {
         x, err := strconv.Atoi(code)
 
@@ -19,11 +20,16 @@ func p1(input string) []int {
         intcodes = append(intcodes, x)
     }
 
+    return intcodes
+}
+
+func p1(input string, noun int, verb int) []int {
+    intcodes := parse_intcodes(input)
     size := len(intcodes)
 
     // As per AoC instructions
-    intcodes[1] = 12
-    intcodes[2] = 2
+    intcodes[1] = noun
+    intcodes[2] = verb
 
     for i := 0; i < size - 4; i+=4 {
         opcode := intcodes[i]
@@ -40,7 +46,19 @@ func p1(input string) []int {
             break
         }
     }
+
     return intcodes
+}
+
+func p2(input string, expected int) int {
+    for noun:= 0; noun <= 99; noun++ {
+        for verb:= 0; verb <= 99; verb++ {
+            if expected == p1(input, noun, verb)[0] {
+                return 100 * noun + verb
+            }
+        }
+    }
+    return -1
 }
 
 func main() {
@@ -51,5 +69,6 @@ func main() {
     }
 
     input := strings.ReplaceAll(string(data), "\n", "")
-    fmt.Println("P1:", p1(input)[0])
+    fmt.Println("P1:", p1(input, 12, 2)[0])
+    fmt.Println("P2:", p2(input, 19690720))
 }
